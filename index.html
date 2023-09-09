@@ -1,0 +1,119 @@
+<html>
+   <head>
+      <title>SandarScout | Morse Telegraf</title>
+      <link rel="icon" href="https://sandarscout.com/wp-content/uploads/2021/03/sandarscout-16x16-1.png" type="image/png" sizes="16x16"/>
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+      <meta name="viewport" content="width=230, initial-scale=1">
+      <script src="morseTable.js"></script>
+      <script src="morse.js"></script>
+      <script src="play.js"></script>
+   </head>
+   <body style="margin:0; padding:0">
+      <div style="padding:1em; padding-top:0.5em; padding-bottom:10em">
+         <h1 id="supportError" style="display:none">The Web Audio API is not supported in this browser.</h1>
+         <!-- <div class="card" style="overflow-y: auto; height: 400px; background-image: url('https://sandarscout.com/wp-content/uploads/2021/03/sandarscout-100x100-1.png'); background-repeat: no-repeat; background-attachment: fixed; background-position: center;"> -->
+         <div class="card" >
+            <div class="card-header">
+               <center>
+                   <font size="4" style="color: red;">Morse Telegraf</font> <br>
+                  <font size="2" style="color: red;">All rights reserved by Sandar Scout</font>
+               </center>
+            </div>
+            <div class="card-body" style="overflow-y: auto; height: 400px;">
+              <div class="container">
+                <center>Frekuensi :</center>
+                <div class="input-group mb-3">
+                   <button class="btn btn-outline-secondary" type="button" onclick="frequencyButtonPress(700)">700Hz</button>
+                   <button class="btn btn-outline-secondary" type="button" onclick="frequencyButtonPress(750)">750Hz</button>
+                   <button class="btn btn-outline-secondary" type="button"onclick="frequencyButtonPress(800)">800Hz</button>
+                   <input type="number" id="freqText" class="form-control" placeholder="" oninput="frequencyTextChange()" disabled>
+                </div>
+                <input type="range" id="freqSlider" min="2" max="4" step="0.0001" style="width:200px" oninput="frequencySliderChange()">
+                <br>
+                <center>Output Speaker :</center>
+                <div class="input-group">
+                   <span class="input-group-text"><i class="bi bi-speaker-fill"></i></span>
+                   <input type="text" id="kanankiri" onkeyup="kanankiri()" class="form-control" value="stereo" disabled>
+                </div>
+                <input type="number" id="panText" step="1" oninput="panTextChange()" title="Speaker kanan atau kiri" disabled hidden>
+                <input type="range" id="panSlider" min="-1" max="1" step="1" style="width:200px" oninput="panSliderChange()">
+                <br>
+                <center>Volume :</center>
+                <div class="input-group">
+                   <span class="input-group-text"><i class="bi bi-volume-up"></i></span>
+                   <input type="number" id="volText" step="0.5" oninput="volumeTextChange()" class="form-control" disabled>
+                </div>
+                <input type="range" id="volSlider" min="0" max="2" step="0.01" style="width:200px" oninput="volumeSliderChange()">
+                <br>
+                <center>WPM :</center>
+                <div class="input-group">
+                   <span class="input-group-text"><i class="bi bi-speedometer2"></i></span>
+                   <input type="number" id="wpmText" oninput="wpmTextChange()" class="form-control" disabled>
+                </div>
+                <input type="range" id="wpmSlider" min="5" max="15" step="1" style="width:200px" oninput="wpmSliderChange()">
+                <br>
+                <center>Durasi Perkarakter :</center>
+                <div class="input-group">
+                   <span class="input-group-text"><i class="bi bi-hourglass"></i></span>
+                   <input type="number" id="fsText" oninput="fsTextChange()" class="form-control" disabled>
+                </div>
+                <input type="range" id="fsSlider" min="2" max="50" step="1" style="width:200px" oninput="fsSliderChange()">
+                <pre id="log" style="display:none">Log:</pre>
+                <br><br><br><br>
+            <center>.</center>
+             </div>
+            </div>
+         </div>
+      </div>
+      <!-- Floating tools -->
+      <div style="position:fixed; bottom:0; width:100%; background: white; margin:0; padding:0; padding-left:10%; padding-right:10%; border:none; border-top:1px solid black">
+         <div class="container">
+            <center>
+               <h3>Soal :</h3>
+               <p contenteditable id="messageArea">
+                  Tulis soal disini.
+               </p>
+            </center>
+            <div style="width:100%; margin:0; margin-bottom:0.2em; margin-top:0.2em">
+               <div class="container">
+                  <center>
+                     <div class="btn-group" role="group" aria-label="Basic example">
+                        <button type="button" class="btn btn-primary" onclick="playMorse()"><i class="bi bi-play-fill"></i>Mainkan</button>
+                        <button type="button" class="btn btn-primary" onclick="pauseMorse()"><i class="bi bi-pause-fill"></i>Pause</button>
+                        <button type="button" class="btn btn-primary" onclick="restartMorse()"><i class="bi bi-arrow-repeat"></i>Ulangi</button>
+                     </div>
+                  </center>
+               </div>
+            </div>
+            <div style="width:100%; margin:0; margin-top:0.3; margin-bottom:0.3em">
+               <div id="navMax" style="float:right; right:0"></div>
+               <div style="width:auto; overflow:hidden">Banyak Karakter: <input type="number" id="navText" step="1" oninput="navTextChange()" hidden></div>
+            </div>
+            <div style="width:100%; text-align:center; margin-bottom:1.5em">
+               <input type="range" id="navSlider" min="0" max="10" step="1" style="width:100%" oninput="navSliderChange()">
+            </div>
+         </div>
+      </div>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+      <script>
+         $(document).ready(function(){
+         
+         $( "#panSlider" ).change(function () {
+         var str = $('#panText').val()
+         if (str === "1") {
+         $( "#kanankiri" ).val("Speaker Kanan");
+         } else if(str === "0"){
+         $( "#kanankiri" ).val("stereo");
+         }else{
+         $( "#kanankiri" ).val("Speaker kiri");
+         }
+         
+         })
+         });
+      </script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+   </body>
+</html>
